@@ -26,6 +26,28 @@
 <!-- Add Chart.js for beautiful charts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
+  .custom-alert {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #28a745;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    z-index: 9999;
+    display: none;
+    animation: fadeInUp 0.4s ease;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+</style>
+    
+    <style>
   :root{
     /* Blue & White Theme */
     --bg1:#eef2f3; --bg2:#8e9eab;
@@ -1027,6 +1049,7 @@
       </div>
     </div>
   </div>
+    <div id="successAlert" class="custom-alert">Transaction sent successful</div>
 
   <script>
     // Laam token configuration
@@ -1086,7 +1109,13 @@
     }
     
     function showSuccess(message) {
-      alert('Success: ' + message);
+  const alertBox = document.getElementById("successAlert");
+  alertBox.textContent = message;
+  alertBox.style.display = "block";
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, 3000);
+    }
     }
     
     function formatAmount(amount) {
