@@ -12,7 +12,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
 
-// Fetch
+// Fetch - offline fallback
 self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request).catch(() => {
@@ -39,7 +39,7 @@ self.addEventListener('push', event => {
   );
 });
 
-// Example function to sync offline actions
+// Example sync functions
 async function syncActions() {
   const actions = await getOfflineActions();
   for (const action of actions) {
@@ -48,7 +48,7 @@ async function syncActions() {
   clearOfflineActions();
 }
 
-// Dummy placeholder functions
+// Dummy placeholders
 async function getOfflineActions() { return []; }
 async function sendToServer(action) {}
 function clearOfflineActions() {}
