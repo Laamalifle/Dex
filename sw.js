@@ -1,22 +1,50 @@
-// sw.js - Service Worker for Laam Wallet PWA
+// sw.js - Laam Wallet Service Worker
 
-// Install event
-self.addEventListener('install', (event) => {
+// Install
+self.addEventListener('install', event => {
   console.log('Service Worker installing...');
   self.skipWaiting();
 });
 
-// Activate event
-self.addEventListener('activate', (event) => {
+// Activate
+self.addEventListener('activate', event => {
   console.log('Service Worker activated!');
   event.waitUntil(self.clients.claim());
 });
 
-// Fetch event
-self.addEventListener('fetch', (event) => {
+// Fetch
+self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request).catch(() => {
       return new Response("You are offline. Please check your connection.");
     })
   );
 });
+
+// Background Sync
+self.addEventListener('sync', event => {
+  if (event.tag === 'sync-actions') {
+    event.waitUntil(syncActions());
+  }
+});
+
+// Example function to sync offline actions
+async function syncActions() {
+  const actions = await getOfflineActions();
+  for (const action of actions) {
+    await sendToServer(action);
+  }
+  clearOfflineActions();
+}
+
+// Dummy placeholder functions (implement according to your app)
+async function getOfflineActions() {
+  // Fetch actions saved in IndexedDB or localStorage
+  return [];
+}
+async function sendToServer(action) {
+  // Send action to server API
+}
+function clearOfflineActions() {
+  // Clear synced actions from storage
+}
