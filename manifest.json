@@ -24,6 +24,7 @@
     { "origin": "https://wallet.laam.online" }
   ],
   "iarc_rating_id": " ",
+  "categories": ["finance"],
   "screenshots": [
     { "src": "https://i.postimg.cc/jSdfhVRM/20250901-181129.png", "sizes": "1080x1920", "type": "image/png" },
     { "src": "https://i.postimg.cc/RhY01YdD/20250901-181620.png", "sizes": "1080x1920", "type": "image/png" },
