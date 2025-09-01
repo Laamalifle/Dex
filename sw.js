@@ -28,6 +28,17 @@ self.addEventListener('sync', event => {
   }
 });
 
+// Push Notifications
+self.addEventListener('push', event => {
+  const data = event.data ? event.data.json() : { title: 'Laam Wallet', body: 'You have a new notification.' };
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: '/icons/icon-192.png'
+    })
+  );
+});
+
 // Example function to sync offline actions
 async function syncActions() {
   const actions = await getOfflineActions();
@@ -37,14 +48,7 @@ async function syncActions() {
   clearOfflineActions();
 }
 
-// Dummy placeholder functions (implement according to your app)
-async function getOfflineActions() {
-  // Fetch actions saved in IndexedDB or localStorage
-  return [];
-}
-async function sendToServer(action) {
-  // Send action to server API
-}
-function clearOfflineActions() {
-  // Clear synced actions from storage
-}
+// Dummy placeholder functions
+async function getOfflineActions() { return []; }
+async function sendToServer(action) {}
+function clearOfflineActions() {}
