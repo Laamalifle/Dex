@@ -1,65 +1,36 @@
 {
-  "name": "Laam Wallet",
-  "short_name": "Laam",
-  "id": "com.laam.wallet",
-  "description": "Laam Wallet is a secure crypto wallet for managing Laam tokens and XLM.",
-  "start_url": "/",
-  "scope": "/",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#1976d2",
-  "theme_color": "#1976d2",
-  "dir": "ltr",
-  "lang": "en",
-  "icons": [
-  {
-    "src": "https://i.postimg.cc/jSdfhVRM/20250901-181129.png",
-    "sizes": "192x192",
-    "type": "image/png",
-    "purpose": "any maskable"
-  },
-  {
-    "src": "https://i.postimg.cc/jSdfhVRM/20250901-181129.png",
-    "sizes": "512x512",
-    "type": "image/png",
-    "purpose": "any maskable"
-  }
-  ],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "prefer_related_applications": false,
-  "related_applications": [],
-  "scope_extensions": [
-    { "origin": "https://wallet.laam.online" }
-  ],
-  "iarc_rating_id": " ",
-  "categories": ["finance"],
-  "screenshots": [
-    {
-      "src": "https://i.postimg.cc/jSdfhVRM/20250901-181129.png",
-      "sizes": "1080x1920",
-      "type": "image/png"
-    },
-    {
-      "src": "https://i.postimg.cc/RhY01YdD/20250901-181620.png",
-      "sizes": "1080x1920",
-      "type": "image/png"
-    },
-    {
-      "src": "https://i.postimg.cc/BnTqtbry/20250901-181635.png",
-      "sizes": "1080x1920",
-      "type": "image/png"
-    },
-    {
-      "src": "https://i.postimg.cc/XXMbY6Q4/20250901-181547.jpg",
-      "sizes": "1080x1920",
-      "type": "image/jpeg"
-    },
-    {
-      "src": "https://i.postimg.cc/XJRjp5YR/20250901-181659.png",
-      "sizes": "1080x1920",
-      "type": "image/png"
-    }
-  ]
+"name": "Laam Wallet",
+"short_name": "Laam",
+"id": "com.laam.wallet",
+"description": "Laam Wallet is a secure crypto wallet for managing Laam tokens and XLM.",
+"start_url": "/",
+"scope": "/",
+"display": "standalone",
+"orientation": "portrait",
+"background_color": "#1976d2",
+"theme_color": "#1976d2",
+"dir": "ltr",
+"lang": "en",
+"icons": [
+{ "src": "https://i.ibb.co/r28SP1bN/20250802-225108.png", "sizes": "192x192", "type": "image/png" },
+{ "src": "https://i.ibb.co/r28SP1bN/20250802-225108.png", "sizes": "512x512", "type": "image/png" }
+],
+"launch_handler": {
+"client_mode": "navigate-existing"
+},
+"prefer_related_applications": false,
+"related_applications": [],
+"scope_extensions": [
+{ "origin": "https://wallet.laam.online" }
+],
+"iarc_rating_id": " ",
+"categories": ["finance"],
+"screenshots": [
+{ "src": "https://i.postimg.cc/jSdfhVRM/20250901-181129.png", "sizes": "1080x1920", "type": "image/png" },
+{ "src": "https://i.postimg.cc/RhY01YdD/20250901-181620.png", "sizes": "1080x1920", "type": "image/png" },
+{ "src": "https://i.postimg.cc/BnTqtbry/20250901-181635.png", "sizes": "1080x1920", "type": "image/png" },
+{ "src": "https://i.postimg.cc/XXMbY6Q4/20250901-181547.jpg", "sizes": "1080x1920", "type": "image/jpeg" },
+{ "src": "https://i.postimg.cc/XJRjp5YR/20250901-181659.png", "sizes": "1080x1920", "type": "image/png" }
+]
 }
+
