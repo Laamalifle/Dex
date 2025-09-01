@@ -2805,18 +2805,28 @@ async function updateOverview() {
     createPriceChart(); // Fallback to sample chart
   }
 }   
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && 'PushManager' in window) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('/sw.js')
       .then(function(registration) {
         console.log('Service Worker registered with scope:', registration.scope);
 
-        // Register background sync
+        // Background Sync
         if ('sync' in registration) {
           registration.sync.register('sync-actions')
             .then(() => console.log('Background sync registered'))
             .catch(err => console.log('Background sync failed', err));
         }
+
+        // Push Notifications
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            console.log('Notifications allowed');
+            // Subscribe user to Push server here if you have backend
+            // registration.pushManager.subscribe({...})
+          }
+        });
+
       })
       .catch(function(error) {
         console.log('Service Worker registration failed:', error);
