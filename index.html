@@ -2810,6 +2810,13 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then(function(registration) {
         console.log('Service Worker registered with scope:', registration.scope);
+
+        // Register background sync
+        if ('sync' in registration) {
+          registration.sync.register('sync-actions')
+            .then(() => console.log('Background sync registered'))
+            .catch(err => console.log('Background sync failed', err));
+        }
       })
       .catch(function(error) {
         console.log('Service Worker registration failed:', error);
