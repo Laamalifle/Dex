@@ -2805,7 +2805,6 @@ async function updateOverview() {
     createPriceChart(); // Fallback to sample chart
   }
 }   
-<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('/sw.js')
