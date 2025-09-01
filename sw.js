@@ -1,92 +1,55 @@
-const CACHE_NAME = 'laam-wallet-cache-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/screenshots/screen1.png',
-  '/screenshots/screen2.png'
-];
+// sw.js - Laam Wallet Service Worker
 
-// Install - cache assets
+// Install
 self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
-  );
-  self.skipWaiting();
+console.log('Service Worker installing...');
+self.skipWaiting();
 });
 
 // Activate
 self.addEventListener('activate', event => {
-  console.log('Service Worker activated!');
-  event.waitUntil(self.clients.claim());
+console.log('Service Worker activated!');
+event.waitUntil(self.clients.claim());
 });
 
-// Fetch - offline-first strategy
+// Fetch - offline fallback
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    fetch(event.request)
-      .then(response => response)
-      .catch(() =>
-        caches.match(event.request).then(cachedResponse => 
-          cachedResponse || new Response("You are offline. Content not available.")
-        )
-      )
-  );
+event.respondWith(
+fetch(event.request).catch(() => {
+return new Response("You are offline. Please check your connection.");
+})
+);
 });
 
 // Background Sync
 self.addEventListener('sync', event => {
-  if (event.tag === 'sync-actions') {
-    event.waitUntil(syncActions());
-  }
+if (event.tag === 'sync-actions') {
+event.waitUntil(syncActions());
+}
 });
 
 // Push Notifications
 self.addEventListener('push', event => {
-  const data = event.data ? event.data.json() : { title: 'Laam Wallet', body: 'You have a new notification.' };
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: '/icons/icon-192.png'
-    })
-  );
+const data = event.data ? event.data.json() : { title: 'Laam Wallet', body: 'You have a new notification.' };
+event.waitUntil(
+self.registration.showNotification(data.title, {
+body: data.body,
+icon: '/icons/icon-192.png'
+})
+);
 });
 
-// --------------------
-// Offline Action Storage
-// --------------------
-
-// Simple localStorage placeholder (for demo)
-async function getOfflineActions() {
-  const actions = localStorage.getItem('offlineActions');
-  return actions ? JSON.parse(actions) : [];
-}
-
-async function sendToServer(action) {
-  // Replace with your API call
-  console.log('Sending action to server:', action);
-}
-
-function clearOfflineActions() {
-  localStorage.removeItem('offlineActions');
-}
-
-function saveActionOffline(action) {
-  const actions = JSON.parse(localStorage.getItem('offlineActions') || "[]");
-  actions.push(action);
-  localStorage.setItem('offlineActions', JSON.stringify(actions));
-}
-
-// Sync function
+// Example sync functions
 async function syncActions() {
-  const actions = await getOfflineActions();
-  for (const action of actions) {
-    await sendToServer(action);
-  }
-  clearOfflineActions();
+const actions = await getOfflineActions();
+for (const action of actions) {
+await sendToServer(action);
 }
+clearOfflineActions();
+}
+
+// Dummy placeholders
+async function getOfflineActions() { return []; }
+async function sendToServer(action) {}
+function clearOfflineActions() {}
+
