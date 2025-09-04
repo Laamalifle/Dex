@@ -5,7 +5,7 @@
 "description": "Laam Wallet is a secure crypto wallet for managing Laam tokens and XLM.",
 "start_url": "/",
 "scope": "/",
-"display": "standalone",
+"display": "fullscreen",
 "orientation": "portrait",
 "background_color": "#1976d2",
 "theme_color": "#1976d2",
