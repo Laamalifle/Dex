@@ -2833,6 +2833,22 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
       });
   });
 }
+function swapTradeAssets() {
+‎  // Hel labada asset box
+‎  const assetBoxes = document.querySelectorAll(".trade-asset-selector .asset-box");
+‎
+‎  if (assetBoxes.length === 2) {
+‎    const firstBox = assetBoxes[0];
+‎    const secondBox = assetBoxes[1];
+‎
+‎    // Ku keydi copy of firstBox HTML
+‎    const tempHTML = firstBox.innerHTML;
+‎
+‎    // Swap contents
+‎    firstBox.innerHTML = secondBox.innerHTML;
+‎    secondBox.innerHTML = tempHTML;
+‎  }
+‎  }
 </script>             
 </body>
 </html>
