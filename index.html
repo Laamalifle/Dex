@@ -3082,48 +3082,107 @@ document.head.appendChild(style);
         }
       });
        
-      // Event listener for the Receive button
-      document.getElementById('btnReceive').addEventListener('click', function() {
-          const publicKey = currentKeypair ? currentKeypair.publicKey() : "GB7WZHXV4FCATLV2LZFLYU7A74BD5WALPUMOU4CY4DRJGJIL3EW3DGXA";
-          
-          // Create a modal to show the receive address (QR code and text)
-          const receiveModal = document.createElement('div');
-          receiveModal.style.cssText = `
-              position: fixed;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: rgba(0,0,0,0.7);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              z-index: 10000;
-          `;
-          
-          receiveModal.innerHTML = `
-              <div style="background: white; padding: 25px; border-radius: 20px; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                  <h3 style="color: #1976d2; margin-top: 0; margin-bottom: 20px;">Your Receive Address</h3>
-                  <div style="background: white; padding: 15px; margin: 15px 0; border-radius: 12px; border: 1px solid #e0e0e0;">
-                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${publicKey}" 
-                           alt="QR Code" style="max-width: 180px; border-radius: 8px;">
-                  </div>
-                  <div style="font-size: 14px; color: #666; margin-bottom: 10px;">Scan this QR code or copy the address below</div>
-                  <div class="mono" style="font-size: 13px; margin: 15px 0; padding: 12px; background: #f8f9fa; border-radius: 12px; word-break: break-all; line-height: 1.5;">
-                      ${publicKey}
-                  </div>
-                  <button onclick="this.parentElement.parentElement.remove()" 
-                          style="background: #1976d2; color: white; border: none; padding: 12px 24px; 
-                                 border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 10px;">
-                      Close
-                  </button>
-              </div>
-          `;
-          
-          document.body.appendChild(receiveModal);
-      });
-    
+// Event listener for the Receive button
+document.getElementById('btnReceive').addEventListener('click', function () {
+    const publicKey = currentKeypair ? currentKeypair.publicKey() : "GB7WZHXV4FCATLV2LZFLYU7A74BD5WALPUMOU4CY4DRJGJIL3EW3DGXA";
 
+    const receiveModal = document.createElement('div');
+    receiveModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+    `;
+
+    receiveModal.innerHTML = `
+        <div style="background: white; padding: 25px; border-radius: 20px; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <h3 style="color: #1976d2; margin-top: 0; margin-bottom: 20px;">Your Receive Address</h3>
+            <div style="background: white; padding: 15px; margin: 15px 0; border-radius: 12px; border: 1px solid #e0e0e0;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${publicKey}" 
+                     alt="QR Code" style="max-width: 180px; border-radius: 8px;">
+            </div>
+            <div style="font-size: 14px; color: #666; margin-bottom: 10px;">Scan this QR code or copy the address below</div>
+            <div id="publicKeyText" class="mono" 
+                 style="font-size: 13px; margin: 15px 0; padding: 12px; background: #f8f9fa; border-radius: 12px; word-break: break-all; line-height: 1.5;">
+                ${publicKey}
+            </div>
+            <button id="btnCopy" 
+                    style="background: #4caf50; color: white; border: none; padding: 10px 22px; 
+                           border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 10px; margin-right: 10px;">
+                Copy
+            </button>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    style="background: #1976d2; color: white; border: none; padding: 12px 24px; 
+                           border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 10px;">
+                Close
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(receiveModal);
+
+    // Add event listener to the Copy button
+    document.getElementById("btnCopy").addEventListener("click", function () {
+        copyToClipboard("publicKeyText");
+    });
+});
+
+// Copy helper using toast
+function copyToClipboard(elementId) {
+    try {
+        const text = document.getElementById(elementId).textContent.trim();
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copied to clipboard!");
+            }).catch(err => {
+                fallbackCopy(text);
+            });
+        } else {
+            fallbackCopy(text);
+        }
+    } catch (err) {
+        console.error("Copy error:", err);
+        showToast("Copy failed!");
+    }
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, 99999);
+    const successful = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    if (successful) {
+        showToast("Copied to clipboard!");
+    } else {
+        showToast("Copy failed!");
+    }
+}
+
+// Toast helper (ku dar haddii aadan hore u haysan)
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #333; color: #fff; padding: 10px 20px; border-radius: 8px;
+      font-size: 14px; z-index: 10001; opacity: 0; transition: opacity 0.3s;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = "1"; }, 50);
+    setTimeout(() => { toast.style.opacity = "0"; }, 2000);
+    setTimeout(() => { toast.remove(); }, 2500);
+     }
+              
       // Tab switching event listeners
       document.getElementById('overviewTab').addEventListener('click', () => switchTab('overview'));
       document.getElementById('orderbookTab').addEventListener('click', () => switchTab('orderbook'));
