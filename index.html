@@ -2935,7 +2935,7 @@ async function updateBalanceDisplay() {
           await loadWallet();
           watchDeposits();
          
-            function watchDeposits() {
+         function watchDeposits() {
   if (!currentKeypair) {
     console.warn("No wallet loaded, cannot watch deposits.");
     return;
@@ -2946,27 +2946,65 @@ async function updateBalanceDisplay() {
 
   server.payments()
     .forAccount(publicKey)
-    .cursor("now")
+    .cursor("now") // wixii cusub kadib unlock
     .stream({
       onmessage: function (payment) {
-        console.log("📩 Incoming event:", payment);
+        let destination = null;
 
-        if (payment.type === "payment" && payment.to === publicKey) {
-          const amount = payment.amount;
-          const asset = payment.asset_type === "native" ? "XLM" : payment.asset_code;
-          showDepositNotification(amount, asset);
+        // Payment ama create_account ayaa noqon kara
+        if (payment.type === "payment") {
+          destination = payment.to;
+        } else if (payment.type === "create_account") {
+          destination = payment.account;
         }
 
-        if (payment.type === "create_account" && payment.account === publicKey) {
-          showDepositNotification(payment.starting_balance, "XLM");
+        if (destination === publicKey) {
+          const amount = payment.amount;
+          const asset = payment.asset_type === "native" ? "XLM" : payment.asset_code;
+
+          console.log("💰 Deposit received:", amount, asset);
+          showDepositNotification(amount, asset);
         }
       },
       onerror: function (err) {
         console.error("Deposit stream error:", err);
       }
     });
-    }
-          console.log("Wallet unlocked:", currentKeypair.publicKey());
+}
+
+function showDepositNotification(amount, asset) {
+  const notif = document.createElement("div");
+  notif.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4caf50;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    z-index: 99999;
+    font-weight: 600;
+    font-family: sans-serif;
+    font-size: 14px;
+    animation: slideIn 0.3s ease-out;
+  `;
+  notif.textContent = `✅ Deposit of ${amount} ${asset} received`;
+  document.body.appendChild(notif);
+
+  setTimeout(() => notif.remove(), 6000);
+}
+
+// Animation
+const style = document.createElement("style");
+style.innerHTML = `
+@keyframes slideIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}`;
+        document.head.appendChild(style);
+            
+         console.log("Wallet unlocked:", currentKeypair.publicKey());
           
           showSuccess('Wallet unlocked successfully!');
           document.getElementById('authSection').classList.add('hidden');
