@@ -2999,7 +2999,8 @@ style.innerHTML = `
   to { transform: translateX(0); opacity: 1; }
 }`;
 document.head.appendChild(style);
-          
+            
+          console.log("Wallet unlocked:", currentKeypair.publicKey());
           showSuccess('Wallet unlocked successfully!');
           document.getElementById('authSection').classList.add('hidden');
           document.getElementById('loggedInView').classList.remove('hidden');
