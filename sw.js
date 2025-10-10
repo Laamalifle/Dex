@@ -28,28 +28,37 @@ event.waitUntil(syncActions());
 }
 });
 
-// Listen for push events
+// ✅ Listen for push events
 self.addEventListener('push', event => {
-  const data = event.data.json();
-  self.registration.showNotification(data.title, {
-    body: data.body,
-    icon: '/laam-icon.png',
-    badge: '/laam-badge.png',
-    data: {
-      url: data.url || '/'
-    }
-  });
+  const data = event.data ? event.data.json() : {};
+  console.log('📨 Push received:', data);
+
+  const title = data.title || 'Laam Wallet';
+  const body = data.body || 'You have a new wallet update!';
+  const icon = 'https://i.ibb.co/r28SP1bN/20250802-225108.png'; // Update with your icon link
+  const badge = 'https://yourdomain.com/laam-badge.png'; // Optional small icon
+
+  event.waitUntil
+    self.registration.showNotification(title, {
+      body,
+      icon,
+      badge,
+      data: { url: data.url || '/' }
+    })
+  );
 });
 
-// Notification click handler
-self.addEventListener('notificationclick', function(event) {
+// ✅ Handle notification click
+self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then(clientList => {
       for (let client of clientList) {
-        if ('focus' in client) return client.focus();
+        if (client.url === event.notification.data.url && 'focus' in client)
+          return client.focus();
       }
-      if (clients.openWindow) return clients.openWindow(event.notification.data.url);
+      if (clients.openWindow)
+        return clients.openWindow(event.notification.data.url);
     })
   );
 });
