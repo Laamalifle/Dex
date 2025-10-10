@@ -2,44 +2,51 @@ import express from 'express';
 import webpush from 'web-push';
 import { Server } from 'stellar-sdk';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 const server = new Server('https://horizon.stellar.org');
-let subscriptions = []; // Save subscriptions here (or DB)
+let subscriptions = [];
 
-// VAPID keys
+// ====== 🔑 VAPID KEYS (bedel kuwana kuwaaga) ======
 webpush.setVapidDetails(
   'mailto:you@laamwallet.com',
-  '<YOUR_VAPID_PUBLIC_KEY>',
-  '<YOUR_VAPID_PRIVATE_KEY>'
+  'BOH3Yt...<YOUR_PUBLIC_KEY>...',
+  'D1l7U...<YOUR_PRIVATE_KEY>...'
 );
 
-// Save subscription endpoint
+// ====== 💾 Save subscription endpoint ======
 app.post('/api/save-subscription', (req, res) => {
   subscriptions.push(req.body);
   res.sendStatus(201);
 });
 
-// Stellar wallet monitoring (example for one wallet)
-const WALLET_ADDRESS = '<USER_LAAM_WALLET_ADDRESS>';
+// ====== 👛 Wallet to monitor ======
+const WALLET_ADDRESS = 'GAL4ECDAXNBMJYFCWIJ32HKVIRLCNEXY664CAZYI3EINQWPLXTMEPR64';
 
+// ====== 📡 Stream Stellar transactions ======
 server.transactions()
   .forAccount(WALLET_ADDRESS)
   .cursor('now')
-  .stream({ onmessage: async tx => {
-    const amount = tx.operations?.[0]?.amount || '0';
-    const asset = tx.operations?.[0]?.asset_code || 'LAAM';
-    const title = 'Laam Wallet';
-    const body = `${amount} ${asset} deposited successfully!`;
-    const url = '/dashboard';
+  .stream({
+    onmessage: async (tx) => {
+      const ops = await server.operations().forTransaction(tx.id).call();
+      ops.records.forEach(op => {
+        if (op.type === 'payment' && op.to === WALLET_ADDRESS) {
+          const title = '💰 Laam Wallet Deposit';
+          const body = `${op.amount} ${op.asset_code || 'XLM'} deposited successfully`;
+          const payload = JSON.stringify({ title, body, url: '/dashboard' });
 
-    // Send push notification to all subscribers
-    subscriptions.forEach(sub => {
-      webpush.sendNotification(sub, JSON.stringify({ title, body, url }))
-        .catch(err => console.error('Push error:', err));
-    });
-  }});
+          subscriptions.forEach(sub => {
+            webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
+          });
+        }
+      });
+    }
+  });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(3000, () => console.log('🚀 Laam Wallet Notification Server running on port 3000'));
