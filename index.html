@@ -4297,50 +4297,58 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
    // Enhanced createOffer for multiple pairs
-async function createOffer(mode, amount, price) {
-  if (!currentKeypair || !currentBaseAsset || !currentCounterAsset) {
-    throw new Error('Wallet not loaded or assets not initialized.');
-  }
-
-  try {
-    const account = await server.loadAccount(currentKeypair.publicKey());
-    
-    let operation;
-    if (mode === 'buy') {
-      operation = StellarSdk.Operation.manageBuyOffer({
-        selling: currentCounterAsset,
-        buying: currentBaseAsset,
-        buyAmount: amount.toString(),
-        price: price.toString(),
-        offerId: '0'
-      });
-    } else  {
-      operation = StellarSdk.Operation.manageSellOffer({
-        selling: currentBaseAsset,
-        buying: currentCounterAsset,
-        amount: amount.toString(),
-        price: price.toString(),
-        offerId: '0'
-      });
+function calculateTotal() {
+      const price = parseFloat(document.getElementById('modalPrice').value) || 0;
+      const amount = parseFloat(document.getElementById('modalAmount').value) || 0;
+      const total = price * amount;
+      document.getElementById('modalTotal').value = total.toFixed(7);
     }
-    
-    const transaction = new StellarSdk.TransactionBuilder(account, {
-      fee: StellarSdk.BASE_FEE,
-      networkPassphrase: StellarSdk.Networks.PUBLIC
-    })
-    .addOperation(operation)
-    .setTimeout(180)
-    .build();
-    transaction.sign(currentKeypair);
-    
-    const result = await server.submitTransaction(transaction);
-    return result;
-    
-  } catch (error) {
-    console.error('Trade execution error:', error);
-    throw error;
-  }
-}
+
+    // Create offer function
+    async function createOffer(mode, amount, price) {
+      if (!currentKeypair || !LAAM_ASSET) {
+        throw new Error('Wallet not loaded or asset not initialized.');
+      }
+
+      try {
+        const account = await server.loadAccount(currentKeypair.publicKey());
+        
+        let operation;
+        if (mode === 'buy') {
+          operation = StellarSdk.Operation.manageBuyOffer({
+            selling: StellarSdk.Asset.native(),
+            buying: LAAM_ASSET,
+            buyAmount: amount.toString(),
+            price: price.toString(),
+            offerId: '0'
+          });
+        } else {
+          operation = StellarSdk.Operation.manageSellOffer({
+            selling: LAAM_ASSET,
+            buying: StellarSdk.Asset.native(),
+            amount: amount.toString(),
+            price: price.toString(),
+            offerId: '0'
+          });
+        }
+        
+        const transaction = new StellarSdk.TransactionBuilder(account, {
+          fee: StellarSdk.BASE_FEE,
+          networkPassphrase: StellarSdk.Networks.PUBLIC
+        })
+        .addOperation(operation)
+        .setTimeout(180)
+        .build();
+        transaction.sign(currentKeypair);
+        
+        const result = await server.submitTransaction(transaction);
+        return result;
+        
+      } catch (error) {
+        console.error('Trade execution error:', error);
+        throw error;
+      }
+      }
     // Load user offers
     async function loadUserOffers() {
   try {
