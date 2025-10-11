@@ -2,7 +2,7 @@
   "name": "Laam Wallet",
   "short_name": "Laam",
   "description": "Laam Wallet is a secure crypto wallet for managing Laam tokens and XLM.",
-  "start_url": "/?source=pwa",
+  "start_url": "/?Laam wallet",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "fullscreen", "minimal-ui"],
