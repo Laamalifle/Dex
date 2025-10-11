@@ -1,4 +1,4 @@
-const CACHE_NAME = 'laam-wallet-cache-v1';
+const CACHE_NAME = 'laam-wallet-cache-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -6,48 +6,98 @@ const urlsToCache = [
   'https://i.ibb.co/r28SP1bN/20250802-225108.png'
 ];
 
-// Install
+// ✅ INSTALL
 self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
+  console.log('🚀 Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
   self.skipWaiting();
 });
 
-// Activate
+// ✅ ACTIVATE
 self.addEventListener('activate', event => {
-  console.log('Service Worker activated!');
+  console.log('✅ Service Worker activated!');
   event.waitUntil(self.clients.claim());
 });
 
-// Fetch - offline fallback
+// ✅ FETCH - With Offline Fallback (modern HTML message)
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request).catch(() => {
-        return new Response("You are offline. Please check your connection.");
-      });
+      return (
+        response ||
+        fetch(event.request).catch(() => {
+          return new Response(`
+            <html>
+              <head>
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                <title>Offline - Laam Wallet</title>
+                <style>
+                  body {
+                    margin: 0;
+                    background: #0f0f23;
+                    color: #f0f0f0;
+                    font-family: 'Inter', sans-serif;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    text-align: center;
+                  }
+                  .card {
+                    background: rgba(26, 26, 46, 0.9);
+                    padding: 30px;
+                    border-radius: 20px;
+                    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+                    max-width: 300px;
+                  }
+                  img {
+                    width: 80px;
+                    height: 80px;
+                    margin-bottom: 15px;
+                  }
+                  h2 {
+                    color: #7c3aed;
+                    margin-bottom: 10px;
+                  }
+                  p {
+                    color: #a0a0c0;
+                    font-size: 15px;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="card">
+                  <img src="https://i.ibb.co/r28SP1bN/20250802-225108.png" alt="Laam Wallet Logo" />
+                  <h2>You're Offline</h2>
+                  <p>Please check your internet connection<br>and try again.</p>
+                </div>
+              </body>
+            </html>
+          `, { headers: { 'Content-Type': 'text/html' } });
+        })
+      );
     })
   );
 });
 
-// Background Sync
+// ✅ BACKGROUND SYNC
 self.addEventListener('sync', event => {
   if (event.tag === 'sync-actions') {
     event.waitUntil(syncActions());
   }
 });
 
-// ✅ Listen for push events
+// ✅ PUSH NOTIFICATIONS
 self.addEventListener('push', event => {
   const data = event.data ? event.data.json() : {};
-  console.log('📨 Push received:', data);
+  console.log('📩 Push received:', data);
 
   const title = data.title || 'Laam Wallet';
   const body = data.body || 'You have a new wallet update!';
   const icon = 'https://i.ibb.co/r28SP1bN/20250802-225108.png';
-  const badge = 'https://yourdomain.com/laam-badge.png';
+  const badge = 'https://i.ibb.co/r28SP1bN/20250802-225108.png';
 
   event.waitUntil(
     self.registration.showNotification(title, {
@@ -59,7 +109,7 @@ self.addEventListener('push', event => {
   );
 });
 
-// ✅ Handle notification click
+// ✅ HANDLE NOTIFICATION CLICK
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
@@ -74,7 +124,7 @@ self.addEventListener('notificationclick', event => {
   );
 });
 
-// Example sync functions
+// ✅ SYNC FUNCTIONS (offline actions placeholder)
 async function syncActions() {
   const actions = await getOfflineActions();
   for (const action of actions) {
@@ -83,7 +133,6 @@ async function syncActions() {
   clearOfflineActions();
 }
 
-// Dummy placeholders
 async function getOfflineActions() { return []; }
 async function sendToServer(action) {}
 function clearOfflineActions() {}
