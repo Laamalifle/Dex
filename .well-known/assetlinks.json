@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "online.laam.wallet.twa",
+      "sha256_cert_fingerprints": [
+        "19:75:E1:FC:99:0F:5D:B7:47:15:D2:FF:64:32:F0:0A:DB:BC:A0:97:54:43:24:C1:7E:2E:72:17:53:70:E3:5B"
+      ]
+    }
+  }
+]
