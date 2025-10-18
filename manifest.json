@@ -26,14 +26,11 @@
   "launch_handler": { "client_mode": "navigate-existing" },
   "prefer_related_applications": false,
   "categories": ["finance"],
-  "iarc_rating_id": "Everyone"
-}
-  "categories": ["finance"],
+  "iarc_rating_id": "Everyone",
   "screenshots": [
-    { "src": "https://i.postimg.cc/qRXHMt7Q/1760143590653.jpg", "sizes": "1080x1920", "type": "image/png" },
     { "src": "https://i.postimg.cc/qRXHMt7Q/1760143590653.jpg", "sizes": "1080x1920", "type": "image/png" },
     { "src": "https://i.postimg.cc/pr6G2xKq/Screenshot-20251011-034328.jpg", "sizes": "1080x1920", "type": "image/png" },
     { "src": "https://i.postimg.cc/k4r7Cwwb/Screenshot-20251011-032915.jpg", "sizes": "1080x1920", "type": "image/jpeg" },
-    { "src": "https://i.postimg.cc/sgRP5vfC/Screenshot-20251011-033945.jpg" }
+    { "src": "https://i.postimg.cc/sgRP5vfC/Screenshot-20251011-033945.jpg", "sizes": "1080x1920", "type": "image/jpeg" }
   ]
 }
